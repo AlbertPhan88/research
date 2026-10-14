@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic SDLC</title>
+<meta name="description" content="A source-checked study of the agentic software development lifecycle as described by Anthropic and OpenAI in 2025–2026.">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="crumb"><a href="../../">Research Notes</a> / Agentic SDLC</nav>
+
+  <h1>The Agentic SDLC, per Anthropic and OpenAI</h1>
+  <p class="meta">Study date: 14 October 2026 · Sources: 3 Anthropic primary, 1 OpenAI primary, 1 OpenAI secondary</p>
+
+  <p class="lede">Anthropic and OpenAI describe the same model. The classic SDLC stages stay. Agents do most of the execution inside each stage. Humans move to specification, harness design, verification, and final ownership of what ships.</p>
+
+  <div class="legend">
+    <span><span class="tag fact">Fact</span> verified in a primary source</span>
+    <span><span class="tag assume">Assumption</span> unverified, and the conclusion depends on it</span>
+    <span><span class="tag infer">Inference</span> derived from the facts</span>
+    <span><span class="tag risk">Risk</span> what breaks if an assumption is wrong</span>
+  </div>
+
+  <h2>1. Sources studied</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>ID</th><th>Source</th><th>Date</th><th>How it was read</th></tr>
+    <tr><td>A1</td><td><a href="https://resources.anthropic.com/hubfs/2026%20Agentic%20Coding%20Trends%20Report.pdf">Anthropic, <em>2026 Agentic Coding Trends Report</em></a></td><td>Early 2026</td><td>Full PDF text extracted <span class="tag fact">Primary</span></td></tr>
+    <tr><td>A2</td><td><a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Anthropic Engineering, <em>Effective harnesses for long-running agents</em></a></td><td>26 Nov 2025</td><td>Full page <span class="tag fact">Primary</span></td></tr>
+    <tr><td>A3</td><td><a href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Anthropic Engineering, <em>Harness design for long-running application development</em></a></td><td>24 Mar 2026</td><td>Full page <span class="tag fact">Primary</span></td></tr>
+    <tr><td>O1</td><td><a href="https://learn.chatgpt.com/guides/build-ai-native-engineering-team">OpenAI, <em>Building an AI-Native Engineering Team</em></a></td><td>2026</td><td>Full page <span class="tag fact">Primary</span></td></tr>
+    <tr><td>O2</td><td><a href="https://openai.com/index/harness-engineering/">OpenAI, <em>Harness engineering: leveraging Codex in an agent-first world</em></a></td><td>11 Feb 2026</td><td>The page returned HTTP 403, so details come from <a href="https://www.theneuron.ai/explainer-articles/openais-harness-engineering-playbook-how-to-ship-1m-lines-of-code-without-writing-any/">third-party write-ups</a> <span class="tag assume">Secondary</span></td></tr>
+  </table>
+  </div>
+
+  <h2>2. The shared model</h2>
+  <p>The diagram compares one engineer's job before and after agents.</p>
+  <div class="statepair">
+    <div class="box">
+      <h4>Before</h4>
+      <div class="label">Engineer</div>
+      <div>Plan → design → <strong>write code</strong> → test → review → deploy</div>
+      <div class="meta">One feature at a time, by hand.</div>
+    </div>
+    <div class="box">
+      <h4>After</h4>
+      <div class="label">Engineer</div>
+      <div>Specify · decompose · build the harness · judge output · own what ships</div>
+      <div class="inner">
+        <div class="label">Agents (parallel, running for hours to days)</div>
+        <div>Planning support · scaffolding · building · testing · first-pass review · docs · incident triage</div>
+      </div>
+    </div>
+  </div>
+  <ul class="claims">
+    <li><span class="tag fact">Fact</span> A1, p.5: “Traditional SDLC stages remain, but agent-driven implementation, automated testing, and inline documentation collapse cycle time from weeks to hours.”</li>
+    <li><span class="tag fact">Fact</span> O1 uses the same seven phases, and each one has an explicit Delegate / Review / Own split.</li>
+    <li><span class="tag infer">Inference</span> Neither lab proposes a new lifecycle. “Agentic SDLC” means changing who does each stage, not what the stages are.</li>
+  </ul>
+
+  <h2>3. OpenAI's phase map: Delegate, Review, Own</h2>
+  <p>Source: O1.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Phase</th><th>The agent does</th><th>The human does</th></tr>
+    <tr><td>Plan</td><td>Reads specs, maps them to the codebase, flags ambiguity, decomposes work, estimates difficulty</td><td>Prioritizes, sequences, makes trade-offs</td></tr>
+    <tr><td>Design</td><td>Scaffolds projects, turns designs into code through MCP links to design tools, applies design tokens</td><td>Owns the design system, UX patterns, and architecture</td></tr>
+    <tr><td>Build</td><td>Drafts whole features (models, APIs, UI, tests, docs) and produces PR-ready diffs</td><td>Clarifies the spec, reviews architecture, designs guardrails</td></tr>
+    <tr><td>Test</td><td>Proposes edge cases and keeps tests current</td><td>Checks for stubbed or shortcut tests, and treats tests as the source of truth</td></tr>
+    <tr><td>Review</td><td>Runs a first pass on every PR, traces logic, executes code</td><td>Reviews architecture and fit to requirements, and owns what ships</td></tr>
+    <tr><td>Document</td><td>Writes summaries, Mermaid diagrams, and release notes</td><td>Sets documentation strategy, adds the “why”, owns external and legal docs</td></tr>
+    <tr><td>Deploy &amp; maintain</td><td>Parses logs through MCP, finds the suspect commit, proposes a hotfix</td><td>Validates the diagnosis and approves remediation</td></tr>
+  </table>
+  </div>
+  <p>O1 also names concrete practices:</p>
+  <ul>
+    <li>A committed <code>PLAN.md</code> for multi-step work.</li>
+    <li>An <code>AGENTS.md</code> that lists test and lint commands, so the agent has a feedback loop.</li>
+    <li>Tests written as a separate step and confirmed failing before implementation.</li>
+    <li>A review evaluation set built from gold-standard PRs. Review quality is measured by reactions to PR comments.</li>
+  </ul>
+
+  <h2>4. Anthropic's framing: eight trends</h2>
+  <p>Source: A1. The report groups its trends into three categories.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Group</th><th>Trend</th><th>Key claim</th></tr>
+    <tr><td rowspan="1">Foundation</td><td>1. The SDLC changes dramatically</td><td>Engineers move “from implementer to orchestrator”. Onboarding to a codebase drops from weeks to hours.</td></tr>
+    <tr><td rowspan="4">Capability</td><td>2. Single agents become coordinated teams</td><td>An orchestrator runs specialized agents in parallel, each with its own context window.</td></tr>
+    <tr><td>3. Long-running agents build complete systems</td><td>Task horizons stretch to days. At Rakuten, Claude Code ran 7 hours autonomously in vLLM (12.5M lines) and reached 99.9% numerical accuracy.</td></tr>
+    <tr><td>4. Human oversight scales</td><td>Agents review AI-generated output. Humans review what matters. Agents learn when to ask for help.</td></tr>
+    <tr><td>5. New surfaces and users</td><td>Support grows for COBOL and Fortran. Non-developers use tools such as Cowork.</td></tr>
+    <tr><td rowspan="3">Impact</td><td>6. Software economics shift</td><td>About 27% of AI-assisted work “wouldn't have been done otherwise”.</td></tr>
+    <tr><td>7. Non-technical use grows</td><td>Anthropic's legal team cut marketing review turnaround from 2–3 days to 24 hours.</td></tr>
+    <tr><td>8. Dual-use security risk</td><td>Defense becomes easier, but attackers scale too, so security must be built in from the start.</td></tr>
+  </table>
+  </div>
+  <ul class="claims">
+    <li><span class="tag fact">Fact</span> A1, p.3: developers use AI in about 60% of their work, but can “fully delegate” only 0–20% of tasks.</li>
+    <li><span class="tag infer">Inference</span> The report's own data undercuts an “agents do everything” reading. In practice the work is collaborative and needs constant supervision.</li>
+  </ul>
+
+  <h2>5. Harness engineering: where the method lives</h2>
+  <p>Both labs' engineering posts locate capability in the harness, not the prompt. A harness is the environment, artifacts, and checks around the agent.</p>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Practice</th><th>Anthropic (A2, A3)</th><th>OpenAI (O1, O2)</th></tr>
+    <tr><td>Durable state outside the context window</td><td><code>feature_list.json</code> with 200+ items, where the agent may only flip the <code>passes</code> field; <code>claude-progress.txt</code>; git history</td><td><code>PLAN.md</code>. O2 reportedly states that anything the agent can't access in context “effectively doesn't exist”. <span class="tag assume">Secondary</span></td></tr>
+    <tr><td>Entry-point instructions</td><td><code>init.sh</code> plus a fixed startup routine for each session</td><td>An <code>AGENTS.md</code> of about 100 lines that acts as a map into <code>docs/</code> <span class="tag assume">Secondary</span></td></tr>
+    <tr><td>Unit of work</td><td>One feature per session, ending in a mergeable state</td><td>Well-specified, scoped tasks</td></tr>
+    <tr><td>Separating builder from grader</td><td>Planner, generator, and evaluator agents. A “sprint contract” fixes what “done” means before coding.</td><td>Tests written first and confirmed failing. A separate, review-specialized model.</td></tr>
+    <tr><td>Realistic verification</td><td>Playwright or Puppeteer clicks through the app. Unit tests plus <code>curl</code> were not enough.</td><td>The agent must be able to run the test suites and coverage tools.</td></tr>
+    <tr><td>Encoding taste</td><td>An evaluator rubric with hard thresholds</td><td>Custom lints make bad patterns “statically impossible”, and a recurring agent opens small cleanup PRs. <span class="tag assume">Secondary</span></td></tr>
+  </table>
+  </div>
+
+  <h3>Findings from A3</h3>
+  <ul class="claims">
+    <li><span class="tag fact">Fact</span> <strong>Self-evaluation is lenient.</strong> Agents praise their own work. A separate, skeptical evaluator was easier to build than a self-critical builder.</li>
+    <li><span class="tag fact">Fact</span> <strong>The evaluator is not reliable out of the box.</strong> It found real issues, then talked itself into approving the work. Tuning it took several rounds of reading its logs.</li>
+    <li><span class="tag fact">Fact</span> <strong>Quality costs time and money.</strong> A solo agent took 20 minutes and $9, but its core feature was broken. The full harness took 6 hours and $200 and produced a working app.</li>
+    <li><span class="tag fact">Fact</span> <strong>Harnesses decay as models improve.</strong> With Opus 4.6, the team dropped sprints and moved the evaluator to a single final pass. An evaluator earns its cost only on tasks at the edge of what the model can do alone.</li>
+    <li><span class="tag fact">Fact</span> <strong>Simplify one component at a time.</strong> A radical cut lost performance. Removing parts one by one worked.</li>
+  </ul>
+
+  <h2>6. Where the labs converge and diverge</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>Dimension</th><th>Anthropic</th><th>OpenAI</th><th>Reading</th></tr>
+    <tr><td>SDLC stages</td><td>Kept</td><td>Kept (seven phases)</td><td>Same</td></tr>
+    <tr><td>Human role</td><td>Orchestrator. Taste and organizational context stay human.</td><td>Delegate, review, and own</td><td>Same</td></tr>
+    <tr><td>Main lever</td><td>Multi-agent coordination and long-running agents</td><td>Repository legibility, <code>AGENTS.md</code>, mechanically enforced invariants</td><td>Different emphasis</td></tr>
+    <tr><td>Code review</td><td>AI review handles scale. Humans review what matters.</td><td>O1: humans still review PRs. O2 reportedly merged without human review.</td><td>Tension within OpenAI's own material <span class="tag assume">Secondary</span></td></tr>
+    <tr><td>Scope</td><td>Extends beyond engineering (legal, operations)</td><td>Engineering teams</td><td>Anthropic is broader</td></tr>
+    <tr><td>Security</td><td>A full trend of its own (trend 8)</td><td>Access scopes in the deploy phase only</td><td>Anthropic is stronger</td></tr>
+  </table>
+  </div>
+
+  <h2>7. How strong is the evidence?</h2>
+  <ul class="claims">
+    <li><span class="tag risk">Risk</span> <strong>Vendor bias.</strong> Every source comes from a company that sells coding agents. The case studies (CRED “2x”, TELUS “30% faster”, Augment “4–8 months to 2 weeks”) are customer self-reports with no baselines.</li>
+    <li><span class="tag risk">Risk</span> <strong>Predictions, not data.</strong> A1 calls itself “predictions … not certainties”. Only the 60% / 0–20% figure and the 27% figure come from Anthropic's internal research.</li>
+    <li><span class="tag infer">Inference</span> <strong>The strongest evidence is the negative evidence.</strong> The failure modes are concrete and reproducible: premature completion, lenient self-grading, stubbed tests, and context decay. They are worth more than the throughput claims.</li>
+    <li><span class="tag assume">Assumption</span> <strong>O2 is a greenfield case.</strong> It reportedly produced about 1M lines in five months with no human-written code, from a small team. That shows what a purpose-built repository allows. It says little about legacy codebases.</li>
+    <li><span class="tag fact">Fact</span> O1 cites METR: as of August 2025, leading models sustained about 2 hours 17 minutes of work at 50% success, and task length doubles roughly every seven months.</li>
+    <li><span class="tag infer">Inference</span> At a 50% success rate, verification cannot be optional. That explains why both labs invest so heavily in evaluators and tests.</li>
+  </ul>
+
+  <h2>8. What to adopt, in order</h2>
+  <ol class="steps">
+    <li>Write <code>CLAUDE.md</code> or <code>AGENTS.md</code> as a short map: build, test, and lint commands, plus pointers to deeper docs.</li>
+    <li>Move decisions out of chat and into the repository, as plan files and decision records. The agent cannot see anything else.</li>
+    <li>Write tests first, confirm that they fail, and forbid the agent from editing them.</li>
+    <li>Do one feature per session and end in a mergeable state. Hand off through a progress file and the git log.</li>
+    <li>Verify the way a user would, through a browser or end-to-end tests, not unit tests alone.</li>
+    <li>Separate the builder from the grader with a review agent or a second model that uses an explicit rubric.</li>
+    <li>Turn every recurring review complaint into a lint rule or a test.</li>
+    <li>On each model upgrade, remove harness parts one at a time, and keep only those that still bear load.</li>
+  </ol>
+
+  <footer>
+    <p><a href="../../">← All topics</a></p>
+  </footer>
+</div>
+</body>
+</html>
